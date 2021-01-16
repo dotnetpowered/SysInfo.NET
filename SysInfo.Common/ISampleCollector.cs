@@ -2,9 +2,9 @@
 // SysInfo.ISampleCollector
 //
 // Authors:
-//   Brian Ritchie (brianlritchie@hotmail.com)
+//   Brian Ritchie (brian.rtichie@gmail.com)
 //
-// Copyright (C) Brian Ritchie, 2005
+// Copyright (C) Brian Ritchie
 //
 using System;
 

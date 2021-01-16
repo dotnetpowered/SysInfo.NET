@@ -2,42 +2,40 @@
 // SysInfo.Sample
 //
 // Authors:
-//   Brian Ritchie (brianlritchie@hotmail.com)
+//   Brian Ritchie (brian.rtichie@gmail.com)
 //
-// Copyright (C) Brian Ritchie, 2005
+// Copyright (C) Brian Ritchie
 //
 using System;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace SysInfo
 {
 	[Serializable]
 	public class Sample
-	{
-		private ArrayList EntryList;
-		private DateTime _DateCollected;
-		private SampleKind _Kind;
+    {
+        private List<SampleEntry> EntryList = new();
 
 		public Sample()
 		{
+			DateCollected = DateTime.Now;
 		}
 
 		public Sample(SampleKind kind)
 		{
 			DateCollected=DateTime.Now;
 			Kind=kind;
-			EntryList=new ArrayList();
 		}
 
 		public SampleEntry[] Items
 		{
 			get
 			{
-				return (SampleEntry[]) EntryList.ToArray(typeof(SampleEntry));
+				return EntryList.ToArray();
 			}
 			set
 			{
-				EntryList=new ArrayList(value);
+				EntryList=new (value);
 			}
 		}
 
@@ -46,29 +44,7 @@ namespace SysInfo
 			EntryList.Add(new SampleEntry(Category,Name,Value.ToString()));
 		}
 
-		public DateTime DateCollected
-		{
-			get
-			{
-				return _DateCollected;
-			}
-			set
-			{
-				_DateCollected=value;
-			}
-		}
-
-		public SampleKind Kind
-		{
-			get
-			{
-				return _Kind;
-			}
-			set
-			{
-				_Kind=value;
-			}
-		}
-
+		public DateTime DateCollected { get; set; }
+		public SampleKind Kind { get; set; }
 	}
 }

@@ -2,9 +2,9 @@
 // SysInfo.ServerEnvironment
 //
 // Authors:
-//   Brian Ritchie (brianlritchie@hotmail.com)
+//   Brian Ritchie (brian.rtichie@gmail.com)
 //
-// Copyright (C) Brian Ritchie, 2003
+// Copyright (C) Brian Ritchie
 //
 using System;
 
