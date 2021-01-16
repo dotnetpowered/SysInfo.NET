@@ -2,14 +2,11 @@
 // SysInfo.SystemMonitor
 //
 // Authors:
-//   Brian Ritchie (brianlritchie@hotmail.com)
+//   Brian Ritchie (brian.rtichie@gmail.com)
 //
-// Copyright (C) Brian Ritchie, 2005
+// Copyright (C) Brian Ritchie
 //
-using System;
-using System.Collections;
-using System.Xml;
-using System.IO;
+using System.Collections.Concurrent;
 using System.Threading;
 
 namespace SysInfo
@@ -17,7 +14,7 @@ namespace SysInfo
 	internal class SystemMonitor
 	{
 		private ISampleCollector Collector;
-		private Queue Samples;
+		private ConcurrentQueue<Sample> Samples;
 		private Thread MonitorThread;
 		private Sample StaticSample;
 		private int MaxSamples;
@@ -27,7 +24,7 @@ namespace SysInfo
 			this.MaxSamples=MaxSamples;
 			this.Collector=collector;
 			StaticSample=collector.CollectStaticSample();
-			Samples=new Queue();
+			Samples=new ();
 			MonitorThread=new Thread(new ThreadStart(MonitorThreadMain));
 			MonitorThread.IsBackground=true;
 			MonitorThread.Start();
@@ -40,24 +37,14 @@ namespace SysInfo
 
 		public Sample[] GetDynamicSamples()
 		{
-			Mutex mutex=new Mutex(false,"monitorthread");
-			mutex.WaitOne();
-			ArrayList SampleList=new ArrayList(Samples);
-			Sample[] samples=(Sample[]) SampleList.ToArray(typeof(Sample));
-			mutex.ReleaseMutex();
-			return samples;
+			return Samples.ToArray();
 		}
 
 		private void AddSample(Sample sample)
 		{
-			Mutex mutex=new Mutex(false,"monitorthread");
-			if (mutex.WaitOne())
-			{
-				Samples.Enqueue(sample);
-				if (Samples.Count>MaxSamples)
-					Samples.Dequeue();
-			}
-			mutex.ReleaseMutex();
+			Samples.Enqueue(sample);
+			if (Samples.Count>MaxSamples)
+				Samples.TryDequeue(out _);
 		}
  
 		public void MonitorThreadMain()
